@@ -21,10 +21,11 @@ from mycroft import MycroftSkill, intent_handler
 from urllib.parse import quote
 from gi.repository import Gio as gio
 
-class DesktopLauncherSkill(MycroftSkill):
+class ApplicationLauncher(MycroftSkill):
     def __init__(self):
         super().__init__()
         self.appmap = {}
+        self.kalterlist = ["console"]
 
     def initialize(self):
         tokenizer = EnglishTokenizer()
@@ -56,6 +57,8 @@ class DesktopLauncherSkill(MycroftSkill):
     def handle_launch_desktop_app(self, message):
         """Launch a dektop application using Desktop file."""
         app_name = message.data.get('Application')
+        if app_name in self.kalterlist:
+            app_name == self.get_alter_name(app_name)
         apps = self.appmap.get(app_name)
         if apps and len(apps) > 0:
             self.log.info('Launching {}'.format(app_name))
@@ -89,5 +92,9 @@ class DesktopLauncherSkill(MycroftSkill):
 
         return False
 
+    def get_alter_name(self, app_name):
+        if app_name == "console":
+            return "konsole"
+
 def create_skill():
-    return DesktopLauncherSkill()
+    return ApplicationLauncher()
